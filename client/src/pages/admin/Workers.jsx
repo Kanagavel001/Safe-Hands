@@ -5,13 +5,17 @@ import toast from 'react-hot-toast'
 
 const Workers = () => {
 
-    const { servicesCategory, axios, workers, navigate } = useAppContext();
+    const { servicesCategory, axios, workers, navigate, isAdmin } = useAppContext();
     const [name, setName] = useState('');
     const [service, setService] = useState('');
     const [salary, setSalary] = useState('');
 
     const handleAddWorker = async (e) => {
         e.preventDefault();
+
+        if(!isAdmin){
+            return toast.error("Admin can only access");
+        }
 
         const workerData = {
             name, service, salary

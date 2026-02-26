@@ -5,12 +5,15 @@ import toast from 'react-hot-toast';
 
 const AdminServiceCard = ({service}) => {
 
-    const { axios, fetchService } = useAppContext();
+    const { axios, fetchService, isAdmin } = useAppContext();
 
     const [editPrice, setEditPrice] = useState(false);
     const [price, setPrice] = useState(service.price)
 
     const handleChangePrice = async (id) => {
+        if(!isAdmin){
+            return toast.error("Admin can only access");
+        }
         const serviceData = {
             price, id
         }
