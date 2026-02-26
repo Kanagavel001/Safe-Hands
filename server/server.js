@@ -13,7 +13,7 @@ const app = express();
 connectDB();
 connectCloudinary();
 
-const allowedOrigins = ['http://localhost:5173'];
+const allowedOrigins = ['http://localhost:5173', 'https://safehands-eight.vercel.app'];
 
 app.use(express.json());
 app.use(cookieParser());
