@@ -5,13 +5,42 @@ import "react-datepicker/dist/react-datepicker.css";
 import { motion } from 'framer-motion';
 import { useParams } from 'react-router-dom';
 import { useAppContext } from '../context/AppContext';
+import toast from 'react-hot-toast';
 
 const Cart = () => {
 
     const { id } = useParams();
-    const { services } = useAppContext();
+    const { services, isUser, axios } = useAppContext();
     const [serviceDate, setServiceDate] = useState('');
+    const [address, setAddress] = useState('');
     const [service, setService] = useState({});
+
+    const handleBooking = async (e) => {
+        e.preventDefault();
+        if(!isUser){
+            return toast.error('Login first after book the service');
+        }
+
+        if(!address || !serviceDate){
+            return notyf.error('Required all fields');
+        }
+
+        const bookingData = {
+            user: isUser.email,
+            serviceId: service._id,
+            address,
+            date: serviceDate
+        }
+
+        const { data } = await axios.post('/api/booking/create', {bookingData});
+
+        if(data.success){
+            toast.success(data.message);
+            window.location.href = data.url;
+        }else{
+            toast.error(data.message)
+        }
+    }
 
     useEffect(()=>{
         setService(services.find(service => service._id === id));
@@ -64,7 +93,8 @@ const Cart = () => {
                             <p className='font-bold text-sm sm:text-base'>₹ {service.price}</p>
                         </div>
                     </motion.div>
-                    <motion.div
+                    <motion.form
+                        onSubmit={handleBooking}
                         initial={{x: 50, opacity: 0}}
                         whileInView={{x: 0, opacity: 1}}
                         viewport={{once: true}}
@@ -75,7 +105,7 @@ const Cart = () => {
                             <div htmlFor="" className='space-y-2'>
                                 <p className='font-medium text-sm'>Your City</p>
                                 <div className='relative'>
-                                    <input type="text" className='ring rounded-lg py-1 px-2 focus:ring-primary outline-none transition-all duration-300 w-full' placeholder='City, district' />
+                                    <input required value={address} onChange={(e)=>setAddress(e.target.value)} type="text" className='ring rounded-lg py-1 px-2 focus:ring-primary outline-none transition-all duration-300 w-full' placeholder='City, district' />
                                     <MapPin className=' absolute top-1 right-2 text-gray-500'/>
                                 </div>
                             </div>
@@ -83,6 +113,7 @@ const Cart = () => {
                                 <p className='font-medium text-sm'>Service Date</p>
                                 <div className='relative w-full'>
                                     <DatePicker
+                                        required
                                         minDate={new Date()}
                                         selected={serviceDate}
                                         onChange={(date) => setServiceDate(date)}
@@ -121,8 +152,8 @@ const Cart = () => {
                                 </div>
                             </div>
                         </div>
-                        <button className='w-full bg-primary py-1 rounded-lg text-white font-medium hover:bg-primary/80 transition-all duration-300'>Book Service</button>
-                    </motion.div>
+                        <button type='submit' className='w-full bg-primary py-1 rounded-lg text-white font-medium hover:bg-primary/80 transition-all duration-300'>Book Service</button>
+                    </motion.form>
                 </div>
 
                 <motion.div 

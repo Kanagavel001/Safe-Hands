@@ -7,6 +7,8 @@ import serviceRouter from './routers/serviceRouter.js';
 import connectCloudinary from './configs/cloudinary.js';
 import workerRouter from './routers/workerRouter.js';
 import userRouter from './routers/userRouter.js';
+import bookingRouter from './routers/bookingRouter.js';
+import { stripeWebhooks } from './controllers/stripeWebhooks.js';
 
 const app = express();
 
@@ -14,6 +16,7 @@ connectDB();
 connectCloudinary();
 
 const allowedOrigins = ['http://localhost:5173', 'https://safehands-eight.vercel.app'];
+app.post('/api/stripe', express.raw({ type: 'application/json' }), stripeWebhooks);
 
 app.use(express.json());
 app.use(cookieParser());
@@ -21,6 +24,7 @@ app.use(cors({ origin : allowedOrigins, credentials : true }));
 
 app.get('/', (req, res) => res.send('Server is live!'));
 app.use('/api/user', userRouter);
+app.use('/api/booking', bookingRouter);
 app.use('/api/service', serviceRouter);
 app.use('/api/worker', workerRouter);
 
