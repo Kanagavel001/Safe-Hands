@@ -1,10 +1,39 @@
 import { motion } from 'framer-motion'
 import React from 'react'
-import { dummyBookingsData } from '../assets/assets'
 import { Wrench } from 'lucide-react';
 import moment from "moment";
+import { useAppContext } from '../context/AppContext';
+import { useEffect } from 'react';
+import { useState } from 'react';
+import { Link } from 'react-router-dom';
+import toast from 'react-hot-toast';
 
 const MyBookings = () => {
+
+    const { axios, isUser } = useAppContext();
+    const [bookings, setBookings] = useState([])
+
+    const fetchBookings = async () => {
+        const {data} = await axios.get(`/api/booking/get-single`);
+        if(data.success){
+            setBookings(data.bookings);
+        }
+    }
+
+    const handleCancel = async (id) => {
+        const {data} = await axios.put('/api/booking/cancel', {id});
+        if(data.success){
+            toast.success(data.message);
+        }else{
+            toast.error(data.message);
+        }
+    }
+
+    useEffect(()=>{
+        fetchBookings();
+    }, [handleCancel]);
+
+
   return (
     <div className='px-4 md:px-16 lg:px-24 xl:px-32 mx-auto max-w-screen overflow-hidden'>
         <div className='min-h-screen py-16 md:py-24'>
@@ -30,7 +59,7 @@ const MyBookings = () => {
                     viewport={{once: true}}
                     transition={{duration: 1, type: 'spring', ease: 'easeOut'}}
                     className='flex-2 space-y-4 ring-primary/10 shadow-lg shadow-primary/10 ring-2 rounded-xl p-4 h-140 overflow-y-scroll no-scrollbar mt-4 lg:w-4xl'>
-                    {dummyBookingsData.map((booking) => (
+                    {bookings.map((booking) => (
                         <div className='p-2 ring-1 ring-primary/30 rounded-xl px-4' key={booking._id}>
                             <div className='flex items-center justify-between'>
                                 <div className='flex items-center gap-2 md:gap-4'>
@@ -44,8 +73,8 @@ const MyBookings = () => {
                                 </div>
                                 <div className='flex flex-col items-center space-y-2 w-20 '>
                                     <p className='font-medium text-sm sm:text-base'>₹ {booking.price}</p>
-                                    {booking.status !== "Canceled" && <button disabled={booking.isPaid} className={`text-sm font-medium px-4 py-0.5 rounded-lg text-white ${booking.isPaid ? "bg-secondary/80" : "bg-primary/80 hover:bg-primary hover:scale-105"} transition-all duration-300`}>{booking.isPaid ? "Paid" : "Pay"}</button>}
-                                    {booking.status === "Upcoming" && <button className={`py-0.5 text-sm font-medium px-4 rounded-lg text-white bg-red-600 hover:scale-105 hover:bg-red-600/80 transition-all duration-300`}>Cancel</button>}
+                                    {booking.status !== "Canceled" && <Link to={booking.paymentLink} disabled={booking.isPaid} className={`text-sm font-medium px-4 py-0.5 rounded-lg text-white ${booking.isPaid ? "bg-secondary/80" : "bg-primary/80 hover:bg-primary hover:scale-105"} transition-all duration-300`}>{booking.isPaid ? "Paid" : "Pay"}</Link>}
+                                    {booking.status === "Upcoming" && <button onClick={()=>handleCancel(booking._id)} className={`py-0.5 text-sm font-medium px-4 rounded-lg text-white bg-red-600 hover:scale-105 hover:bg-red-600/80 transition-all duration-300`}>Cancel</button>}
                                 </div>
                             </div>
                             <div className='flex items-center justify-between border-t border-primary/50 mt-2 pt-2'>

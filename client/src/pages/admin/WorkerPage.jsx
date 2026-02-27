@@ -1,29 +1,40 @@
 import React, { useEffect, useState } from 'react'
-import { dummyBookingsData, dummyWorkersData } from '../../assets/assets'
 import moment from 'moment'
 import { motion } from 'framer-motion'
 import Navbar from '../../components/admin/Navbar'
 import { useParams } from 'react-router-dom'
 import { useAppContext } from '../../context/AppContext'
+import toast from 'react-hot-toast'
 
 const WorkerPage = () => {
 
     const { id } = useParams();
 
-    const { workers } = useAppContext();
+    const { workers, bookings, axios, fetchBookings } = useAppContext();
 
   const [filteredBookings, setFilteredBookings] = useState([]);
   const [worker, setWorker] = useState({});
+
+  const handleComplete = async (id) => {
+    const { data } = await axios.put('/api/booking/complete', {id});
+    if(data.success){
+      toast.success(data.message);
+    }else{
+      toast.error(data.message);
+    }
+  }
 
   useEffect(()=>{
     setWorker(workers.find(worker => worker._id === id))
   }, [workers, id]);
 
   useEffect(()=>{
-    if(worker){
-        setFilteredBookings(dummyBookingsData.filter(booking => worker.service === booking.category && booking.status !== "Canceled"));
-    }
-  }, [worker]);
+    setFilteredBookings(bookings.filter(booking => worker.service === booking.service.category && booking.status !== "Canceled" && booking.status !== "Completed"));
+  }, [bookings]);
+
+  useEffect(()=>{
+    fetchBookings();
+  }, [handleComplete])
 
   return worker && (
     <div>
@@ -75,7 +86,7 @@ const WorkerPage = () => {
                             <p className={`w-fit mx-auto px-4 py-0.5 rounded-md ring ${booking.isPaid ? "text-green-600 ring-green-600 " : "ring-red-600 text-red-600"}`}>{booking.isPaid ? "Paid" : "Pending"}</p>
                           </td>
                           <td className='p-2'>
-                            <p className={`text-white w-fit mx-auto px-4 py-1 rounded-md transition-all duration-300 ${booking.status === "Canceled" ? "bg-red-600" : booking.status === "Completed" ? "bg-secondary" : "bg-primary hover:scale-105 hover:bg-primary/80"}`}>{booking.status === "Upcoming" ? "Complete" : booking.status}</p>
+                            <button onClick={()=>handleComplete(booking._id)} className={`text-white w-fit mx-auto px-4 py-1 rounded-md transition-all duration-300 ${booking.status === "Canceled" ? "bg-red-600" : booking.status === "Completed" ? "bg-secondary" : "bg-primary hover:scale-105 hover:bg-primary/80"}`}>{booking.isPaid ? "Complete" : "Pay & Complete"}</button>
                           </td>
                         </tr>
                       ))}

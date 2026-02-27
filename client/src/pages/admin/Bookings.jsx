@@ -1,26 +1,24 @@
 import React, { useEffect, useState } from 'react'
-import { dummyBookingsData } from '../../assets/assets'
 import moment from 'moment'
 import { motion } from 'framer-motion'
+import { useAppContext } from '../../context/AppContext';
 
 const bookingsType = ["All Bookings", "Upcoming", "Completed", "Canceled"];
 
 const Bookings = () => {
 
+  const { bookings } = useAppContext();
+
   const [selectedBooking, setSelectedBooking] = useState('All Bookings');
   const [filteredBookings, setFilteredBookings] = useState([]);
 
-  const filterBookings = async () => {
-    if(selectedBooking === "All Bookings"){
-      setFilteredBookings(dummyBookingsData);
-    }else{
-      setFilteredBookings(dummyBookingsData.filter(booking => booking.status === selectedBooking));
-    }
-  }
-
   useEffect(()=>{
-    filterBookings();
-  }, [selectedBooking]);
+    if(selectedBooking === "All Bookings"){
+      setFilteredBookings(bookings);
+    }else{
+      setFilteredBookings(bookings.filter(booking => booking.status === selectedBooking));
+    }
+  }, [selectedBooking, bookings]);
 
   return (
     <div>
@@ -34,7 +32,7 @@ const Bookings = () => {
             initial={{x: 0, rotate: 30}}
             whileInView={{x: "4000%"}}
             viewport={{once: true}}
-            transition={{duration: 3, ease: 'easeOut', type: 'spring'}}
+            transition={{duration: 2, ease: 'easeOut', type: 'spring'}}
             className='w-1 inset-0 md:w-2 h-7 md:h-12 bg-bg absolute'></motion.div>
           Bookings
       </motion.h1>

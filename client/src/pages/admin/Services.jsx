@@ -39,7 +39,7 @@ const Services = () => {
                       initial={{x: 0, rotate: 30}}
                       whileInView={{x: "4000%"}}
                       viewport={{once: true}}
-                      transition={{duration: 3, ease: 'easeOut', type: 'spring'}}
+                      transition={{duration: 2, ease: 'easeOut', type: 'spring'}}
                       className='w-1 inset-0 md:w-2 h-7 md:h-12 bg-bg absolute'></motion.div>
                   {!selectedService ? "All Services" : selectedService }
               </motion.h1>

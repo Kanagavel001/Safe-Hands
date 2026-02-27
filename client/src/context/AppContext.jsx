@@ -14,7 +14,9 @@ export const AppProvider = ({ children }) => {
     const [isUser, setIsUser] = useState(false);
     const [isAdmin, setIsAdmin] = useState(false);
     const [services, setServices] = useState([]);
+    const [bookings, setBookings] = useState([]);
     const [workers, setWorkers] = useState([]);
+    const [dashboardData, setDashboardData] = useState({});
     
     const navLinks = [
         {title: "Home", path: '/' },
@@ -53,6 +55,13 @@ export const AppProvider = ({ children }) => {
         }
     }
 
+    const fetchBookings = async () => {
+        const {data} = await axios.get('/api/booking/get-all');
+        if(data.success){
+            setBookings(data.bookings);
+        }
+    }
+
     const fetchWorkers = async () => {
         const { data } = await axios.get('/api/worker/get-all');
         if(data.success){
@@ -60,13 +69,22 @@ export const AppProvider = ({ children }) => {
         }
     }
 
+    const fetchDashboardData = async () => {
+        const { data } = await axios.get('/api/booking/dashboard')
+        if(data.success){
+            setDashboardData(data.dashboardData);
+        }
+    }
+
     useEffect(() => {
         fetchUser();
         fetchServices();
+        fetchBookings();
         fetchWorkers();
+        fetchDashboardData();
     }, []);
  
-    const value = { axios, navigate, navLinks, servicesCategory, isUser, isAdmin, setIsUser, setIsAdmin, services, workers, logout, fetchServices }
+    const value = { axios, navigate, navLinks, servicesCategory, isUser, isAdmin, setIsUser, setIsAdmin, services, workers, logout, fetchServices, bookings, fetchBookings, dashboardData }
 
     return (
         <AppContext.Provider value={value}>
