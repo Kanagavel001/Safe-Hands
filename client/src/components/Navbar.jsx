@@ -60,7 +60,7 @@ const Navbar = () => {
             animate={{x: 0, opacity: 1}}
             exit={{x: "100%", opacity: 0}}
             transition={{duration: 0.5, ease: 'easeInOut' }}
-            className={`md:hidden fixed p-10 top-0 right-0 bg-black backdrop-blur-md h-screen`}>
+            className={`md:hidden fixed p-10 top-0 right-0 bg-black backdrop-blur-md h-[100vh]`}>
             <div>
 
               <div className='flex flex-col space-y-4 font-medium items-center py-4'>
