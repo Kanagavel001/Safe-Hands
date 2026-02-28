@@ -60,8 +60,8 @@ const Navbar = () => {
             animate={{x: 0, opacity: 1}}
             exit={{x: "100%", opacity: 0}}
             transition={{duration: 0.5, ease: 'easeInOut' }}
-            className={`md:hidden fixed p-10 top-0 right-0 bg-black backdrop-blur-md h-[100vh]`}>
-            <div>
+            className={`md:hidden fixed p-10 top-0 right-0 bg-black backdrop-blur-md`}>
+            <div className=' relative h-screen'>
 
               <div className='flex flex-col space-y-4 font-medium items-center py-4'>
                 {navLinks.map((item, i)=>(
@@ -74,7 +74,7 @@ const Navbar = () => {
                 
               </div>
 
-              {isUser ? <div className='absolute bottom-5 mx-auto w-fit left-0 right-0 flex items-center'>
+              {isUser ? <div className='absolute bottom-15 mx-auto w-fit left-0 right-0 flex items-center'>
                 
                 <div className='flex items-center gap-2 font-medium  rounded-full px-4 py-2'>
                   <User className='bg-white p-1 rounded-full'/>
@@ -84,7 +84,7 @@ const Navbar = () => {
                 <button onClick={()=>{logout(); setIsMenuOpen(false)}} className='ring-red-600 rounded-full ring p-2'>
                   <LogOut className='size-4 text-red-600' />
                 </button>
-              </div> : <Link to='/login' className='absolute bottom-5 mx-auto w-fit bg-white px-6 py-2 rounded-full font-medium text-black'>login</Link>}
+              </div> : <Link to='/login' className='absolute bottom-15 mx-auto w-fit bg-white px-6 py-2 rounded-full font-medium text-black'>login</Link>}
             </div>
 
             <button
