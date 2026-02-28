@@ -74,9 +74,9 @@ const Navbar = () => {
                 
               </div>
 
-              {isUser ? <div className='absolute bottom-15 mx-auto w-fit left-0 right-0 flex items-center'>
+              {isUser ? <div className='absolute bottom-15 mx-auto w-fit flex items-center -right-3'>
                 
-                <div className='flex items-center gap-2 font-medium  rounded-full px-4 py-2'>
+                <div className='flex items-center gap-2 font-medium rounded-full px-4 py-2'>
                   <User className='bg-white p-1 rounded-full'/>
                   <p className='text-white text-sm'>{isUser.name}</p>
                 </div>
